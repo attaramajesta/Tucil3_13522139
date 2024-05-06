@@ -1,3 +1,4 @@
+package backend;
 import java.util.*;
 
 public class UCS {
@@ -16,7 +17,7 @@ public class UCS {
             }
 
             for (String neighbor : getNeighbors(current, dictionary)) {
-                int newCost = cost.get(current) + 1; // Uniform cost: assume all edges have cost 1
+                int newCost = cost.get(current) + 1;
                 if (!cost.containsKey(neighbor) || newCost < cost.get(neighbor)) {
                     cost.put(neighbor, newCost);
                     parent.put(neighbor, current);
@@ -25,7 +26,7 @@ public class UCS {
             }
         }
 
-        return Collections.emptyList(); // No path found
+        return Collections.emptyList();
     }
 
     private List<String> reconstructPath(Map<String, String> parent, String current) {

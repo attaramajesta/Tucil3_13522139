@@ -1,3 +1,5 @@
+package backend;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +11,7 @@ public class WordLadderSolver {
 
     static {
         // Load dictionary from WordList.txt
-        loadDictionary("WordList.txt");
+        loadDictionary("../src/backend/WordList.txt");
     }
 
     private static void loadDictionary(String filename) {
@@ -50,27 +52,15 @@ public class WordLadderSolver {
             System.out.println("3. A*");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
+            scanner.nextLine();
 
-            List<String> wordList = new ArrayList<>(dictionary); // Convert dictionary set to list
-
+            List<String> wordList = new ArrayList<>(dictionary);
             switch (choice) {
-                case 0:
-                    BiBFS bfs2 = new BiBFS();
-                    List<String> shortestPath = bfs2.findLadder(startWord, endWord, dictionary);
-                    if (!shortestPath.isEmpty()) {
-                        System.out.println("Number of paths using BFS2: " + shortestPath.size());
-                        System.out.println("Shortest path with BFS2:");
-                        for (String word : shortestPath) {
-                            System.out.println(word);
-                        }
-                    } else {
-                        System.out.println("No path found with BFS2");
-                    }
-                    break;
                 case 1:
                     BFS bfs = new BFS();
+                    long startTime = System.currentTimeMillis();
                     List<String> pathBFS = bfs.findLadder(startWord, endWord, wordList);
+                    long endTime = System.currentTimeMillis();
                     if (!pathBFS.isEmpty()) {
                         System.out.println("Number of paths using BFS: " + pathBFS.size());
                         System.out.println("Path using BFS:");
@@ -80,10 +70,14 @@ public class WordLadderSolver {
                     } else {
                         System.out.println("No path found using BFS.");
                     }
+                    long duration = endTime - startTime;
+                    System.out.println("Algorithm execution time: " + duration + " milliseconds");
                     break;
                 case 2:
                     UCS ucs = new UCS();
+                    long startTimeUCS = System.currentTimeMillis();
                     List<String> pathUCS = ucs.findLadder(startWord, endWord, dictionary);
+                    long endTimeUCS = System.currentTimeMillis();
                     if (!pathUCS.isEmpty()) {
                         System.out.println("Number of paths using BFS: " + pathUCS.size());
                         System.out.println("Path using UCS:");
@@ -93,9 +87,13 @@ public class WordLadderSolver {
                     } else {
                         System.out.println("No path found using UCS.");
                     }
+                    long durationUCS = endTimeUCS - startTimeUCS;
+                    System.out.println("Algorithm execution time: " + durationUCS + " milliseconds");
                     break;
                 case 3:
+                    long startTimeA = System.currentTimeMillis();
                     AStar.SearchResult result = AStar.findLadder(startWord, endWord, dictionary);
+                    long endTimeA = System.currentTimeMillis();
                     List<String> pathAStar = result.getPath();
                     int numberOfPaths = result.getNumberOfPaths();
                     if (!pathAStar.isEmpty()) {
@@ -107,12 +105,14 @@ public class WordLadderSolver {
                     } else {
                         System.out.println("No path found using A*.");
                     }
+                    long durationA = endTimeA - startTimeA;
+                    System.out.println("Algorithm execution time: " + durationA + " milliseconds");
                     break;
                 default:
                     System.out.println("Invalid choice");
             }
         } finally {
-            scanner.close(); // Ensure scanner is closed
+            scanner.close();
         }
     }
 }
