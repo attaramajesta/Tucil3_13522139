@@ -1,125 +1,11 @@
-// package backend;
-
-// import java.io.BufferedReader;
-// import java.io.FileReader;
-// import java.io.IOException;
-// import java.util.*;
-
-// public class WordLadderSolver {
-
-//     private static Set<String> dictionary = new HashSet<>();
-
-//     static {
-//         // Load dictionary from WordList.txt
-//         loadDictionary("../src/backend/WordList.txt");
-//     }
-
-//     private static void loadDictionary(String filename) {
-//         try {
-//             BufferedReader reader = new BufferedReader(new FileReader(filename));
-//             String word;
-//             while ((word = reader.readLine()) != null) {
-//                 dictionary.add(word.trim().toLowerCase());
-//             }
-//             reader.close();
-//         } catch (IOException e) {
-//             System.err.println("Error loading dictionary: " + e.getMessage());
-//         }
-//     }
-
-//     public static void main(String[] args) {
-//         // Main method to call different algorithms
-//         Scanner scanner = new Scanner(System.in);
-
-//         try {
-//             System.out.println("Enter the start word:");
-//             String startWord = scanner.nextLine().trim().toLowerCase();
-//             while (!dictionary.contains(startWord)) {
-//                 System.out.println("Start word not found in the dictionary. Please enter a valid start word:");
-//                 startWord = scanner.nextLine().trim().toLowerCase();
-//             }
-
-//             System.out.println("Enter the end word:");
-//             String endWord = scanner.nextLine().trim().toLowerCase();
-//             while (!dictionary.contains(endWord)) {
-//                 System.out.println("End word not found in the dictionary. Please enter a valid end word:");
-//                 endWord = scanner.nextLine().trim().toLowerCase();
-//             }
-
-//             System.out.println("Choose an algorithm:");
-//             System.out.println("1. GBFS (Breadth-First Search)");
-//             System.out.println("2. Uniform Cost Search (UCS)");
-//             System.out.println("3. A*");
-
-//             int choice = scanner.nextInt();
-//             scanner.nextLine();
-
-//             List<String> wordList = new ArrayList<>(dictionary);
-//             switch (choice) {
-//                 case 1:
-//                     GGBFS GBFS = new GGBFS();
-//                     long startTime = System.currentTimeMillis();
-//                     List<String> pathGBFS = GBFS.findLadder(startWord, endWord, wordList);
-//                     long endTime = System.currentTimeMillis();
-//                     if (!pathGBFS.isEmpty()) {
-//                         System.out.println("Number of paths using GBFS: " + pathGBFS.size());
-//                         System.out.println("Path using GBFS:");
-//                         for (String word : pathGBFS) {
-//                             System.out.println(word);
-//                         }
-//                     } else {
-//                         System.out.println("No path found using GBFS.");
-//                     }
-//                     long duration = endTime - startTime;
-//                     System.out.println("Algorithm execution time: " + duration + " milliseconds");
-//                     break;
-//                 case 2:
-//                     UCS ucs = new UCS();
-//                     long startTimeUCS = System.currentTimeMillis();
-//                     List<String> pathUCS = ucs.findLadder(startWord, endWord, dictionary);
-//                     long endTimeUCS = System.currentTimeMillis();
-//                     if (!pathUCS.isEmpty()) {
-//                         System.out.println("Number of paths using GBFS: " + pathUCS.size());
-//                         System.out.println("Path using UCS:");
-//                         for (String word : pathUCS) {
-//                             System.out.println(word);
-//                         }
-//                     } else {
-//                         System.out.println("No path found using UCS.");
-//                     }
-//                     long durationUCS = endTimeUCS - startTimeUCS;
-//                     System.out.println("Algorithm execution time: " + durationUCS + " milliseconds");
-//                     break;
-//                 case 3:
-//                     long startTimeA = System.currentTimeMillis();
-//                     AStar.SearchResult result = AStar.findLadder(startWord, endWord, dictionary);
-//                     long endTimeA = System.currentTimeMillis();
-//                     List<String> pathAStar = result.getPath();
-//                     int numberOfPaths = result.getNumberOfPaths();
-//                     if (!pathAStar.isEmpty()) {
-//                         System.out.println("Number of paths using A*: " + numberOfPaths);
-//                         System.out.println("Path using A*:");
-//                         for (String word : pathAStar) {
-//                             System.out.println(word);
-//                         }
-//                     } else {
-//                         System.out.println("No path found using A*.");
-//                     }
-//                     long durationA = endTimeA - startTimeA;
-//                     System.out.println("Algorithm execution time: " + durationA + " milliseconds");
-//                     break;
-//                 default:
-//                     System.out.println("Invalid choice");
-//             }
-//         } finally {
-//             scanner.close();
-//         }
-//     }
-// }
-
 package backend;
 
 import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.*;
 import java.util.*;
 
@@ -159,22 +45,39 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
 
     public WordLadderSolverGUI() {
         setTitle("Word Ladder Solver");
-        setSize(600, 400); // Adjusted size
+        setSize(400, 600); // Adjusted size
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel(new GridLayout(0, 1, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(Color.decode("#088add"));
+
+        ImageIcon headerIcon = new ImageIcon("../src/home.png");
+        Image image = headerIcon.getImage();
+        Image scaledImage = image.getScaledInstance(400, -1, Image.SCALE_SMOOTH);
+        headerIcon = new ImageIcon(scaledImage);
+        JLabel headerLabel = new JLabel(headerIcon);
+        headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
 
         JLabel startLabel = new JLabel("Start Word:");
+        startLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        startLabel.setVerticalAlignment(SwingConstants.CENTER);
         startWordField = new JTextField(15);
+        startWordField.setHorizontalAlignment(JTextField.CENTER);
 
         JLabel endLabel = new JLabel("End Word:");
+        endLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        endLabel.setVerticalAlignment(SwingConstants.CENTER);
         endWordField = new JTextField(15);
+        endWordField.setHorizontalAlignment(JTextField.CENTER);
 
         JLabel algorithmLabel = new JLabel("Algorithm:");
+        algorithmLabel.setHorizontalAlignment(SwingConstants.CENTER);
         String[] algorithms = { "GBFS", "UCS", "A*" };
         algorithmComboBox = new JComboBox<>(algorithms);
+        algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton solveButton = new JButton("Solve");
         solveButton.addActionListener(this);
@@ -182,6 +85,15 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         outputArea = new JTextArea(10, 30);
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
+
+        startLabel.setForeground(Color.WHITE);
+        startWordField.setForeground(Color.BLACK);
+        endLabel.setForeground(Color.WHITE);
+        endWordField.setForeground(Color.BLACK);
+        algorithmLabel.setForeground(Color.WHITE);
+        algorithmComboBox.setForeground(Color.BLACK);
+        solveButton.setForeground(Color.BLACK);
+        outputArea.setForeground(Color.BLACK);
 
         mainPanel.add(startLabel);
         mainPanel.add(startWordField);
@@ -210,21 +122,36 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
     private void solveWordLadder(String startWord, String endWord, String algorithm) {
         // Clear previous result
         outputArea.setText("");
-
+    
         List<String> path;
         long startTime = System.currentTimeMillis();
-
+    
         System.out.println("Start Word: " + startWord);
         System.out.println("End Word: " + endWord);
         System.out.println("Algorithm: " + algorithm);
-
+    
+        // Check if start and end words are in the dictionary
+        boolean startValid = dictionary.contains(startWord);
+        boolean endValid = dictionary.contains(endWord);
+    
+        if (!startValid || !endValid) {
+            if (!startValid) {
+                outputArea.append(startWord + " is not a valid word.\n");
+            }
+            if (!endValid) {
+                outputArea.append(endWord + " is not a valid word.\n");
+            }
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            outputArea.append("\nExecution Time: " + duration + " milliseconds\n");
+            return; // Exit method if start or end word is invalid
+        }
+    
         switch (algorithm) {
             case "GBFS":
                 System.out.println("GBFS");
                 GBFS GBFS = new GBFS();
                 path = GBFS.findLadder(startWord, endWord, wordList);
-                System.out.println("Number of paths using GBFS: " + path.size());
-                System.out.println("Paths using GBFS: " + path);
                 break;
             case "UCS":
                 System.out.println("UCS");
@@ -239,13 +166,14 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             default:
                 path = Collections.emptyList();
         }
-
+    
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-
+    
         displayResult(path, duration);
     }
-
+    
+    
     private void displayResult(List<String> path, long duration) {
         if (!path.isEmpty()) {
             outputArea.append("Path found (" + (path.size() - 1) + " words):\n");
@@ -259,3 +187,5 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
     }
 
 }
+
+
