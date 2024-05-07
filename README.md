@@ -31,7 +31,8 @@ Make sure to set up the latest Java Environment
 
 
 ## Usage
-Navigate to the src folder, open terminal and run the syntax below
+1. Adjust dictionary by pasting it to the WordList.txt
+2. Navigate to the src folder, open terminal and run the syntax below
 
 `javac WordLadderSolverGUI.java GBFS.java UCS.java AStar.java`
 `java WordLadderSolverGUI`
