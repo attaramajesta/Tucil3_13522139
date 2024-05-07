@@ -1,7 +1,7 @@
 package backend;
 import java.util.*;
 
-public class BFS {
+public class GBFS {
     public List<String> findLadder(String startWord, String endWord, List<String> wordList) {
         Map<String, List<String>> combinations = new HashMap<>();
         Map<String, String> parentMap = new HashMap<>(); 
@@ -37,7 +37,7 @@ public class BFS {
                     }
                 }
             }
-            
+
             if (visitedWords.contains(endWord)) {
                 List<String> path = new ArrayList<>();
                 String node = endWord;
