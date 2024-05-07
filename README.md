@@ -1,19 +1,15 @@
 # Word Ladder Solver
 > Tool to generate word ladders, a sequence of words to pass from one word to another by modifying only one letter at each stage.
-> Live demo [_here_](https://www.example.com). <!-- If you have the project hosted somewhere, include the link here. -->
 
 ## Table of Contents
 * [General Info](#general-information)
 * [Technologies Used](#technologies-used)
 * [Features](#features)
-* [Screenshots](#screenshots)
 * [Setup](#setup)
 * [Usage](#usage)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 * [Acknowledgements](#acknowledgements)
-* [Contact](#contact)
-<!-- * [License](#license) -->
 
 
 ## General Information
@@ -22,32 +18,23 @@
 
 ## Technologies Used
 - Java - version 11.0.6
-- Tech 2 - version 2.0
-- Tech 3 - version 3.0
 
 
 ## Features
 List the ready features here:
 - Algorithm selection
-- Path Visualization
 - Generate random words
 
 
-## Screenshots
-![Example screenshot](./img/screenshot.png)
-<!-- If you have screenshots you'd like to share, include them here. -->
-
-
 ## Setup
-What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
-
-Proceed to describe how to install / setup one's local environment / get started with the project.
+Make sure to set up the latest Java Environment
 
 
 ## Usage
-Navigate to the ... and run by ...
+Navigate to the src folder, open terminal and run the syntax below
 
-`write-your-code-here`
+`javac WordLadderSolverGUI.java GBFS.java UCS.java AStar.java`
+`java WordLadderSolverGUI`
 
 
 ## Project Status
@@ -62,14 +49,3 @@ Project is: _complete_
 - This project was inspired by the classic word ladder problem.
 - The implementation of algorithms was based on lectures and materials from the IF2211 Algorithm Strategy course at the Institut Teknologi Bandung.
 - Many thanks to the teaching assistant and professors who provided guidance and support throughout the course.
-
-
-## Contact
-Created by Attara Majesta Ayub
-
-
-<!-- Optional -->
-<!-- ## License -->
-<!-- This project is open source and available under the [... License](). -->
-
-<!-- You don't have to include all sections - just the one's relevant to your project -->
