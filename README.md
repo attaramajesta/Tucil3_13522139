@@ -16,7 +16,7 @@
 
 ## General Information
 
-- The Word Ladder Solver is a Java application designed to find the shortest transformation sequence between two words in a given dictionary. It employs various search algorithms, including Breadth-First Search (BFS), Uniform Cost Search (UCS), and A\*
+- The Word Ladder Solver is a Java application designed to find the shortest transformation sequence between two words in a given dictionary. It employs various search algorithms, including BreaGreedy Best First Search (BFS), Uniform Cost Search (UCS), and A\*
 
 ## Technologies Used
 
