@@ -21263,6 +21263,7 @@ egret
 egrets
 egyptian
 eh
+eid
 eide
 eider
 eiders

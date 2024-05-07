@@ -1,9 +1,8 @@
-package backend;
-
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.*;
@@ -17,6 +16,7 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
 
     private Set<String> dictionary;
     private List<String> wordList;
+    private Map<String, List<String>> pathCache; // Cache for storing paths
 
     private void loadDictionary(String filename) {
         dictionary = new HashSet<>();
@@ -33,7 +33,6 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         } catch (Exception e) {
             outputArea.setText("Error loading dictionary: " + e.getMessage());
         }
-        System.out.println("Dictionary loaded with " + dictionary.size() + " words.");
     }
 
     public static void main(String[] args) {
@@ -45,7 +44,7 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
 
     public WordLadderSolverGUI() {
         setTitle("Word Ladder Solver");
-        setSize(400, 600); // Adjusted size
+        setSize(400, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -55,26 +54,27 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
 
         ImageIcon headerIcon = new ImageIcon("../src/home.png");
         Image image = headerIcon.getImage();
-        Image scaledImage = image.getScaledInstance(400, -1, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getScaledInstance(400, 200, Image.SCALE_SMOOTH);
         headerIcon = new ImageIcon(scaledImage);
         JLabel headerLabel = new JLabel(headerIcon);
         headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(headerLabel, BorderLayout.NORTH);
 
         JLabel startLabel = new JLabel("Start Word:");
-        startLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        startLabel.setAlignmentX(CENTER_ALIGNMENT);
         startLabel.setVerticalAlignment(SwingConstants.CENTER);
         startWordField = new JTextField(15);
         startWordField.setHorizontalAlignment(JTextField.CENTER);
 
         JLabel endLabel = new JLabel("End Word:");
-        endLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        endLabel.setAlignmentX(CENTER_ALIGNMENT);
         endLabel.setVerticalAlignment(SwingConstants.CENTER);
         endWordField = new JTextField(15);
         endWordField.setHorizontalAlignment(JTextField.CENTER);
+       
 
         JLabel algorithmLabel = new JLabel("Algorithm:");
-        algorithmLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        algorithmLabel.setAlignmentX(CENTER_ALIGNMENT);
         String[] algorithms = { "GBFS", "UCS", "A*" };
         algorithmComboBox = new JComboBox<>(algorithms);
         algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -82,9 +82,12 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         JButton generateButton = new JButton("Generate");
         generateButton.addActionListener(this);
         generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        generateButton.setPreferredSize(new Dimension(200, 25));
 
         JButton solveButton = new JButton("Solve");
         solveButton.addActionListener(this);
+        solveButton.setAlignmentX(CENTER_ALIGNMENT);
+        solveButton.setPreferredSize(new Dimension(200, 25));
 
         outputArea = new JTextArea(10, 30);
         outputArea.setEditable(false);
@@ -111,7 +114,8 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
 
         add(mainPanel);
 
-        loadDictionary("backend/WordList.txt");
+        loadDictionary("WordList.txt");
+        pathCache = new HashMap<>();
     }
 
     @Override
@@ -121,7 +125,7 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             String endWord = endWordField.getText().trim().toLowerCase();
             String algorithm = (String) algorithmComboBox.getSelectedItem();
             solveWordLadder(startWord, endWord, algorithm);
-        } else if (e.getActionCommand().equals("Generate")) { 
+        } else if (e.getActionCommand().equals("Generate")) {
             generateRandomWords();
         }
     }
@@ -130,14 +134,15 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         // Clear previous result
         outputArea.setText("");
 
+        // Check if the path is already cached
+        String cacheKey = startWord + "-" + endWord + "-" + algorithm;
+        if (pathCache.containsKey(cacheKey)) {
+            displayResult(pathCache.get(cacheKey), 0);
+            return;
+        }
+
         List<String> path;
-        long startTime = System.currentTimeMillis();
 
-        System.out.println("Start Word: " + startWord);
-        System.out.println("End Word: " + endWord);
-        System.out.println("Algorithm: " + algorithm);
-
-        // Check if start and end words are in the dictionary
         boolean startValid = dictionary.contains(startWord);
         boolean endValid = dictionary.contains(endWord);
 
@@ -148,25 +153,21 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             if (!endValid) {
                 outputArea.append(endWord + " is not a valid word.\n");
             }
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-            outputArea.append("\nExecution Time: " + duration + " milliseconds\n");
-            return; // Exit method if start or end word is invalid
+            return;
         }
+
+        long startTime = System.currentTimeMillis();
 
         switch (algorithm) {
             case "GBFS":
-                System.out.println("GBFS");
                 GBFS GBFS = new GBFS();
                 path = GBFS.findLadder(startWord, endWord, wordList);
                 break;
             case "UCS":
-                System.out.println("UCS");
                 UCS ucs = new UCS();
                 path = ucs.findLadder(startWord, endWord, dictionary);
                 break;
             case "A*":
-                System.out.println("A*");
                 AStar.SearchResult result = AStar.findLadder(startWord, endWord, dictionary);
                 path = result.getPath();
                 break;
@@ -177,16 +178,19 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
 
+        // Cache the path
+        pathCache.put(cacheKey, path);
+
         displayResult(path, duration);
     }
 
     private void displayResult(List<String> path, long duration) {
         if (!path.isEmpty()) {
-            outputArea.append("Path found (" + (path.size() - 1) + " words):\n");
             for (String word : path) {
                 outputArea.append(word + "\n");
             }
             outputArea.append("\nExecution Time: " + duration + " milliseconds\n");
+            outputArea.append("Path found (" + (path.size() - 1) + " words):\n");
         } else {
             outputArea.append("No path found.\n");
         }
@@ -196,29 +200,28 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         Random random = new Random();
         int wordLength = random.nextInt(4) + 2;
         StringBuilder sb = new StringBuilder();
-    
+
         List<String> wordsWithSameLength = new ArrayList<>();
         for (String word : wordList) {
             if (word.length() == wordLength) {
                 wordsWithSameLength.add(word);
             }
         }
-    
+
         if (wordsWithSameLength.isEmpty()) {
             outputArea.append("No words of length " + wordLength + " found in the dictionary.");
             return;
         }
-    
+
         String randomStartWord = wordsWithSameLength.get(random.nextInt(wordsWithSameLength.size()));
         startWordField.setText(randomStartWord);
-    
-        sb.setLength(0); 
-    
+
+        sb.setLength(0);
+
         String randomEndWord = randomStartWord;
         while (randomEndWord.equals(randomStartWord)) {
             randomEndWord = wordsWithSameLength.get(random.nextInt(wordsWithSameLength.size()));
         }
         endWordField.setText(randomEndWord);
     }
-    
 }
