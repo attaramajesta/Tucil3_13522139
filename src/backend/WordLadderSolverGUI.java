@@ -79,6 +79,10 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         algorithmComboBox = new JComboBox<>(algorithms);
         algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JButton generateButton = new JButton("Generate");
+        generateButton.addActionListener(this);
+        generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         JButton solveButton = new JButton("Solve");
         solveButton.addActionListener(this);
 
@@ -101,6 +105,7 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         mainPanel.add(endWordField);
         mainPanel.add(algorithmLabel);
         mainPanel.add(algorithmComboBox);
+        mainPanel.add(generateButton);
         mainPanel.add(solveButton);
         mainPanel.add(scrollPane);
 
@@ -116,24 +121,26 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             String endWord = endWordField.getText().trim().toLowerCase();
             String algorithm = (String) algorithmComboBox.getSelectedItem();
             solveWordLadder(startWord, endWord, algorithm);
+        } else if (e.getActionCommand().equals("Generate")) { 
+            generateRandomWords();
         }
     }
 
     private void solveWordLadder(String startWord, String endWord, String algorithm) {
         // Clear previous result
         outputArea.setText("");
-    
+
         List<String> path;
         long startTime = System.currentTimeMillis();
-    
+
         System.out.println("Start Word: " + startWord);
         System.out.println("End Word: " + endWord);
         System.out.println("Algorithm: " + algorithm);
-    
+
         // Check if start and end words are in the dictionary
         boolean startValid = dictionary.contains(startWord);
         boolean endValid = dictionary.contains(endWord);
-    
+
         if (!startValid || !endValid) {
             if (!startValid) {
                 outputArea.append(startWord + " is not a valid word.\n");
@@ -146,7 +153,7 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             outputArea.append("\nExecution Time: " + duration + " milliseconds\n");
             return; // Exit method if start or end word is invalid
         }
-    
+
         switch (algorithm) {
             case "GBFS":
                 System.out.println("GBFS");
@@ -166,14 +173,13 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
             default:
                 path = Collections.emptyList();
         }
-    
+
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-    
+
         displayResult(path, duration);
     }
-    
-    
+
     private void displayResult(List<String> path, long duration) {
         if (!path.isEmpty()) {
             outputArea.append("Path found (" + (path.size() - 1) + " words):\n");
@@ -186,6 +192,33 @@ public class WordLadderSolverGUI extends JFrame implements ActionListener {
         }
     }
 
+    private void generateRandomWords() {
+        Random random = new Random();
+        int wordLength = random.nextInt(4) + 2;
+        StringBuilder sb = new StringBuilder();
+    
+        List<String> wordsWithSameLength = new ArrayList<>();
+        for (String word : wordList) {
+            if (word.length() == wordLength) {
+                wordsWithSameLength.add(word);
+            }
+        }
+    
+        if (wordsWithSameLength.isEmpty()) {
+            outputArea.append("No words of length " + wordLength + " found in the dictionary.");
+            return;
+        }
+    
+        String randomStartWord = wordsWithSameLength.get(random.nextInt(wordsWithSameLength.size()));
+        startWordField.setText(randomStartWord);
+    
+        sb.setLength(0); 
+    
+        String randomEndWord = randomStartWord;
+        while (randomEndWord.equals(randomStartWord)) {
+            randomEndWord = wordsWithSameLength.get(random.nextInt(wordsWithSameLength.size()));
+        }
+        endWordField.setText(randomEndWord);
+    }
+    
 }
-
-
